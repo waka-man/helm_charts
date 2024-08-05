@@ -75,12 +75,15 @@ jobs:
             echo "Processing $tgz_file and $prov_file"
             md5_checksum=$(md5sum "$tgz_file" | awk '{ print $1 }')
             echo "md5: $md5_checksum" >> "$prov_file"
+            echo "Updated $prov_file with checksum:"
+            cat "$prov_file"
           done
 
       - name: Upload charts
         uses: helm/chart-releaser-action@v1.6.0
         with:
           config: cr.yml
-          skip_package: true
+          skip_packaging: true
+          skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
