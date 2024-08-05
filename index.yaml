@@ -1,0 +1,60 @@
+apiVersion: v1
+entries:
+  example-v1:
+  - apiVersion: v1
+    appVersion: "3.9"
+    created: "2024-08-05T12:14:31.929735417Z"
+    description: Deploy a basic Alpine Linux pod
+    digest: 37acf8ef5b3eab17c06b2aca92e5b0b7764a182b5afc91a49ad1cc505e0562f8
+    home: https://helm.sh/helm
+    maintainers:
+    - email: email@example.com
+      name: Name
+    name: example-v1
+    sources:
+    - https://github.com/helm/helm
+    urls:
+    - https://github.com/waka-man/helm_charts/releases/download/example-v1-0.1.12/example-v1-0.1.12.tgz
+    version: 0.1.12
+  example-v2:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2024-08-05T12:14:32.073193983Z"
+    description: A Helm chart for Kubernetes
+    digest: 1f338ee9a8c017353246cfe4920863d3df8fb323aab5cd3e635ff8b46b3a8fe7
+    home: https://helm.sh/helm
+    maintainers:
+    - email: email@example.com
+      name: Name
+    name: example-v2
+    sources:
+    - https://github.com/helm/helm
+    urls:
+    - https://github.com/waka-man/helm_charts/releases/download/example-v2-0.2.8/example-v2-0.2.8.tgz
+    version: 0.2.8
+  hello-world:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-08-05T12:14:32.277691113Z"
+    description: A Helm chart for Kubernetes
+    digest: b24e37d3bed899e3c7f04aa5101fd32ebe26bd36a6a4ade7fc636d1f1cac5190
+    name: hello-world
+    type: application
+    urls:
+    - https://github.com/waka-man/helm_charts/releases/download/hello-world-0.1.0/hello-world-0.1.0.tgz
+    version: 0.1.0
+  nginx-chart:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-08-05T12:14:32.383167468Z"
+    description: My First Helm Chart
+    digest: 6bdefec258e1c4fb5a3ed17824f3a51b94e5f3a9ef69b3997ad9f280f987a5ba
+    maintainers:
+    - email: contact@devopscube.com
+      name: devopscube
+    name: nginx-chart
+    type: application
+    urls:
+    - https://github.com/waka-man/helm_charts/releases/download/nginx-chart-0.1.0/nginx-chart-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-08-05T12:14:32.38317399Z"
