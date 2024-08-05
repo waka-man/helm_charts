@@ -70,7 +70,8 @@ jobs:
       - name: Add MD5 checksum to .prov files
         run: |
           for prov_file in .cr-release-packages/*.prov; do
-            tgz_file="${prov_file%.prov}.tgz"
+            tgz_file="${prov_file%.tgz.prov}.tgz"
+            tgz_file="${tgz_file/.cr-release-packages\//.cr-release-packages\/}"
             echo "Processing $tgz_file and $prov_file"
             md5_checksum=$(md5sum "$tgz_file" | awk '{ print $1 }')
             echo "md5: $md5_checksum" >> "$prov_file"
