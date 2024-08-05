@@ -57,6 +57,15 @@ entries:
     urls:
     - https://github.com/waka-man/helm_charts/releases/download/nginx-chart-0.1.0/nginx-chart-0.1.0.tgz
     version: 0.1.0
+  nodeserver:
+  - apiVersion: v1
+    created: "2024-08-05T12:59:21.292541393Z"
+    description: A Helm chart for Kubernetes
+    digest: 75ecb322fd0acd11e68f1de5d7473f71a0b386a91b1940c1d1ea06cc444ce591
+    name: nodeserver
+    urls:
+    - https://github.com/waka-man/helm_charts/releases/download/nodeserver-1.0.0/nodeserver-1.0.0.tgz
+    version: 1.0.0
   sonarqube:
   - apiVersion: v1
     appVersion: 8.9.7-community
@@ -77,4 +86,4 @@ entries:
     urls:
     - https://github.com/waka-man/helm_charts/releases/download/sonarqube-9.11.0/sonarqube-9.11.0.tgz
     version: 9.11.0
-generated: "2024-08-05T12:26:57.390262082Z"
+generated: "2024-08-05T12:59:21.29255051Z"
