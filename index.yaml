@@ -57,4 +57,24 @@ entries:
     urls:
     - https://github.com/waka-man/helm_charts/releases/download/nginx-chart-0.1.0/nginx-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-05T12:14:32.38317399Z"
+  sonarqube:
+  - apiVersion: v1
+    appVersion: 8.9.7-community
+    created: "2024-08-05T12:26:57.390235652Z"
+    deprecated: true
+    description: SonarQube is an open sourced code quality scanning tool
+    digest: 5dc62c2e0a7b9f4dd24be26275e3c3dd35addca98b36fbb1ff1c2d91fecc217a
+    home: https://www.sonarqube.org/
+    icon: https://www.sonarqube.org/assets/logo-31ad3115b1b4b120f3d1efd63e6b13ac9f1f89437f0cf6881cc4d8b5603a52b4.svg
+    keywords:
+    - coverage
+    - security
+    - code
+    - quality
+    name: sonarqube
+    sources:
+    - https://github.com/SonarSource/docker-sonarqube
+    urls:
+    - https://github.com/waka-man/helm_charts/releases/download/sonarqube-9.11.0/sonarqube-9.11.0.tgz
+    version: 9.11.0
+generated: "2024-08-05T12:26:57.390262082Z"
