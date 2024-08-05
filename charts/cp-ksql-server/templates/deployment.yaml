@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "cp-kafka-connect.fullname" . }}
+  name: {{ template "cp-ksql-server.fullname" . }}
   labels:
-    app: {{ template "cp-kafka-connect.name" . }}
-    chart: {{ template "cp-kafka-connect.chart" . }}
+    app: {{ template "cp-ksql-server.name" . }}
+    chart: {{ template "cp-ksql-server.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "cp-kafka-connect.name" . }}
+      app: {{ template "cp-ksql-server.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "cp-kafka-connect.name" . }}
+        app: {{ template "cp-ksql-server.name" . }}
         release: {{ .Release.Name }}
       {{- if or .Values.podAnnotations .Values.prometheus.jmx.enabled }}
       annotations:
@@ -42,20 +42,20 @@ spec:
           - -jar
           - jmx_prometheus_httpserver.jar
           - {{ .Values.prometheus.jmx.port | quote }}
-          - /etc/jmx-kafka-connect/jmx-kafka-connect-prometheus.yml
+          - /etc/jmx-ksql-server/jmx-ksql-server-prometheus.yml
           ports:
           - containerPort: {{ .Values.prometheus.jmx.port }}
           resources:
 {{ toYaml .Values.prometheus.jmx.resources | indent 12 }}
           volumeMounts:
           - name: jmx-config
-            mountPath: /etc/jmx-kafka-connect
+            mountPath: /etc/jmx-ksql-server
         {{- end }}
-        - name: {{ template "cp-kafka-connect.name" . }}-server
+        - name: {{ template "cp-ksql-server.name" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
           ports:
-            - name: kafka-connect
+            - name: server
               containerPort: {{ .Values.servicePort}}
               protocol: TCP
             {{- if .Values.prometheus.jmx.enabled }}
@@ -64,39 +64,35 @@ spec:
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          {{- if .Values.ksql.headless }}
+          - name: ksql-queries
+            mountPath: /etc/ksql/queries
+          {{- end }}
           env:
-            - name: CONNECT_REST_ADVERTISED_HOST_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: CONNECT_BOOTSTRAP_SERVERS
-              value: {{ template "cp-kafka-connect.kafka.bootstrapServers" . }}
-            - name: CONNECT_GROUP_ID
-              value: {{ template "cp-kafka-connect.groupId" . }}
-            - name: CONNECT_CONFIG_STORAGE_TOPIC
-              value: {{ template "cp-kafka-connect.fullname" . }}-config
-            - name: CONNECT_OFFSET_STORAGE_TOPIC
-              value: {{ template "cp-kafka-connect.fullname" . }}-offset
-            - name: CONNECT_STATUS_STORAGE_TOPIC
-              value: {{ template "cp-kafka-connect.fullname" . }}-status
-            - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
-              value: {{ template "cp-kafka-connect.cp-schema-registry.service-name" .}}
-            - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
-              value: {{ template "cp-kafka-connect.cp-schema-registry.service-name" .}}
-            - name: KAFKA_HEAP_OPTS
-              value: "{{ .Values.heapOptions }}"
-            {{- range $key, $value := .Values.configurationOverrides }}
-            - name: {{ printf "CONNECT_%s" $key | replace "." "_" | upper | quote }}
-              value: {{ $value | quote }}
-            {{- end }}
-            {{- range $key, $value := .Values.customEnv }}
-            - name: {{ $key | quote }}
-              value: {{ $value | quote }}
-            {{- end }}
-            {{- if .Values.jmx.port }}
-            - name: KAFKA_JMX_PORT
-              value: "{{ .Values.jmx.port }}"
-            {{- end }}
+          - name: KSQL_BOOTSTRAP_SERVERS
+            value: {{ template "cp-ksql-server.kafka.bootstrapServers" . }}
+          - name: KSQL_KSQL_SERVICE_ID
+            value: {{ template "cp-ksql-server.serviceId" . }}
+          - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
+            value: {{ template "cp-ksql-server.cp-schema-registry.service-name" . }}
+          - name: KSQL_HEAP_OPTS
+            value: "{{ .Values.heapOptions }}"
+          {{- if .Values.ksql.headless }}
+          - name: KSQL_KSQL_QUERIES_FILE
+            value: /etc/ksql/queries/queries.sql
+          {{- else }}
+          - name: KSQL_LISTENERS
+            value: http://0.0.0.0:8088
+          {{- end }}
+          {{- range $key, $value := .Values.configurationOverrides }}
+          - name: {{ printf "KSQL_%s" $key | replace "." "_" | upper | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- if .Values.jmx.port }}
+          - name: KSQL_JMX_PORT
+            value: "{{ .Values.jmx.port }}"
+          {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -105,7 +101,12 @@ spec:
       {{- if .Values.prometheus.jmx.enabled }}
       - name: jmx-config
         configMap:
-          name: {{ template "cp-kafka-connect.fullname" . }}-jmx-configmap
+          name: {{ template "cp-ksql-server.fullname" . }}-jmx-configmap
+      {{- end }}
+      {{- if .Values.ksql.headless }}
+      - name: ksql-queries
+        configMap:
+          name: {{ template "cp-ksql-server.fullname" . }}-ksql-queries-configmap
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
